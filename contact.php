@@ -1,74 +1,32 @@
-<?php include './includes/header.php';
-?>
+<?php
 
-    <!-- about-Us -->
-    <div class="about-us__home">
-        <p>THE ULTIMATE LUXURY</p>
-        <h1>New Details</h1>
-        <div class="about-us__home-about"><h6>Home | <span>Blog</span></h6></div>
-    </div>
-    <!--body-->
-    <div class="contact">
-        <div>
-            <img src="./Assets/mail-icon.png" alt="">
-        </div>
-        <div class="contact__addres">
-            <p>Hotel Addres</p>
-            <p>19/A, Cirikon City hall Tower New York, NYC</p>
-        </div>
-        <p class="contact__number">01</p>
-    </div>
+include './config.php';
+include './db/connection.php';
+include "./utils/throw_alert.php";
 
-    <div class="contact">
-        <div>
-            <img src="./Assets/phone-icon.png" alt="">
-        </div>
-        <div class="contact__addres">
-            <p>Phone Number</p>
-            <p>+97656867578647</p>
-            <p>+87676686757656</p>
-        </div>
-        <p class="contact__number">02</p>
-    </div>
-    <div class="contact">
-        <div>
-            <img src="./Assets/location-icon.png" alt="">
-        </div>
-        <div class="contact__addres">
-            <p>Email</p>
-            <p>info@webmail.com</p>
-            <p>jobs.webmail@mail.com</p>
-        </div>
-        <p class="contact__number">03</p>
-    </div>
-    <div class="contact-img">
-        <img src="./Assets/maps.png" alt="">
-    </div>
 
-    <form class="contact-form">
-        <div class="contact-form__input-container">
-            <input type="text" placeholder="Your full name">
-            <img src="./Assets/icon/contact/human.png" alt="">
-        </div>
-        <div class="contact-form__input-container">
-            <input type="text" placeholder="Add phone number">
-            <img src="./Assets/icon/contact/phone.png" alt="">
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $contact = [
+        "id" => rand(0, 100),
+        "date" => date("d-m-Y"),
+        "name" => $_POST["name"],
+        "email" => $_POST["email"],
+        "phone" => $_POST["phone"],
+        "subject" => $_POST["subject"],
+        "comment" => $_POST["comment"],
+        
+    ];
+    if (empty($contact)) {
+        echo "Complete all inputs";
+    } else {
+        echo $contact;
+    }
+    
+    $sql = "INSERT INTO reviews(id,date, name, email, phone, comment) VALUES ('".$contact["id"]."','".$contact["date"]."', '".$contact["name"]."', '".$contact["email"]."', '".$contact["phone"]."','".$contact["subject"]."', '".$contact["comment"]."', );";
 
-        </div>
-        <div class="contact-form__input-container">
-            <input type="text" placeholder="Enter email addres">
-            <img src="./Assets/icon/contact/email.png" alt="">
+    $conn->query($sql);
+    throw_alert("Contact saved on DB");
+    $conn->close();
+}
 
-        </div>
-        <div class="contact-form__input-container">
-            <input type="text" placeholder="Enter subject">
-            <img src="./Assets/icon/contact/book.png" alt="">
-        </div>
-        <div class="contact-form__input-container">
-            <textarea  name="textarea" rows="10" cols="22"></textarea>
-            <img src="./Assets/icon/contact/pencil.png" alt="">
-
-        </div>
-    </form>
-    <?php include './includes/footer.php';
-?>
+echo $blade->run("contact");
